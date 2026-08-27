@@ -1,200 +1,242 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="团队程序设计天梯赛 GPLT 225 道题的仓颉语言题解">
   <title>GPLT · 仓颉语言题解</title>
+  <meta name="description" content="团队程序设计天梯赛练习集 GPLT 的仓颉语言题解">
+  <meta name="theme-color" content="#6658d3">
   <script>
+    // 在 Docsify 渲染前应用主题，避免刷新时出现白色闪烁。
     (function () {
       try {
         var saved = localStorage.getItem('gplt-theme');
-        var dark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var dark = saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches);
         if (dark) document.documentElement.classList.add('dark-mode');
-      } catch (error) {}
+      } catch (error) {
+        // 隐私模式禁用 localStorage 时仍允许页面正常加载。
+      }
     }());
   </script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
   <style>
     :root {
-      --theme-color: #6a5acd;
-      --accent: #6a5acd;
-      --page-bg: #ffffff;
-      --surface: #ffffff;
-      --sidebar-bg: #f7f7fb;
-      --text: #2c3e50;
-      --muted: #6b7280;
-      --border: #e7e7ef;
+      --theme-color: #6658d3;
+      --theme-color-dark: #9d92ff;
       --code-bg: #f6f7fc;
-      --quote-bg: #f5f3ff;
+      --code-border: #e4e6f0;
+      --page-bg: #ffffff;
+      --surface-bg: #ffffff;
+      --sidebar-bg: #fafaff;
+      --text-color: #293044;
+      --muted-color: #737b91;
+      --border-color: #e7e9f1;
+      --code-text: #30364a;
     }
 
     html.dark-mode,
     body.dark-mode {
       --page-bg: #12131a;
-      --surface: #1c1f2e;
+      --surface-bg: #1c1f2e;
       --sidebar-bg: #171a27;
-      --text: #e6e8f2;
-      --muted: #a9aec1;
-      --border: #2a2f4a;
-      --code-bg: #151824;
-      --quote-bg: #24223b;
+      --text-color: #d7d9e5;
+      --muted-color: #9da3bb;
+      --border-color: #2a2f4a;
+      --code-bg: #191c29;
+      --code-border: #303653;
+      --code-text: #d7d9e5;
     }
 
     html.dark-mode body,
     body.dark-mode {
       background: var(--page-bg) !important;
-      color: var(--text) !important;
+      color: var(--text-color) !important;
     }
 
-    html.dark-mode .app-nav,
-    html.dark-mode .app-sub-sidebar,
-    html.dark-mode .markdown-section,
-    html.dark-mode .content,
-    html.dark-mode .sidebar,
-    body.dark-mode .app-nav,
-    body.dark-mode .app-sub-sidebar,
-    body.dark-mode .markdown-section,
-    body.dark-mode .content,
-    body.dark-mode .sidebar {
-      background: var(--surface) !important;
-      color: var(--text) !important;
+    body,
+    .app-nav,
+    .markdown-section,
+    .markdown-section table,
+    .markdown-section tr,
+    .markdown-section td,
+    .markdown-section th {
+      color: var(--text-color);
     }
 
-    html.dark-mode .sidebar,
-    body.dark-mode .sidebar {
-      background: var(--sidebar-bg) !important;
-      border-right-color: var(--border) !important;
+    .app-nav,
+    .markdown-section,
+    .markdown-section blockquote,
+    .markdown-section code,
+    .markdown-section pre,
+    .markdown-section table,
+    .markdown-section tr,
+    .markdown-section td,
+    .markdown-section th {
+      border-color: var(--border-color) !important;
     }
 
-    html.dark-mode .markdown-section h1,
-    html.dark-mode .markdown-section h2,
-    html.dark-mode .markdown-section h3,
-    html.dark-mode .markdown-section h4,
-    html.dark-mode .markdown-section strong,
-    html.dark-mode .markdown-section p,
-    html.dark-mode .markdown-section li,
-    html.dark-mode .markdown-section td,
-    html.dark-mode .markdown-section th,
-    body.dark-mode .markdown-section h1,
-    body.dark-mode .markdown-section h2,
-    body.dark-mode .markdown-section h3,
-    body.dark-mode .markdown-section h4,
-    body.dark-mode .markdown-section strong,
-    body.dark-mode .markdown-section p,
-    body.dark-mode .markdown-section li,
-    body.dark-mode .markdown-section td,
-    body.dark-mode .markdown-section th {
-      color: var(--text) !important;
+    .markdown-section h1,
+    .markdown-section h2,
+    .markdown-section h3,
+    .markdown-section h4,
+    .markdown-section strong {
+      color: var(--text-color);
     }
 
-    html.dark-mode a,
-    body.dark-mode a { color: #a99cff !important; }
-    html.dark-mode .sidebar-nav > ul > li > a,
-    body.dark-mode .sidebar-nav > ul > li > a { color: var(--text) !important; }
-    html.dark-mode .sidebar-nav li > a,
-    body.dark-mode .sidebar-nav li > a { color: var(--muted) !important; }
-    html.dark-mode .sidebar-nav li.active > a,
-    body.dark-mode .sidebar-nav li.active > a { color: #b7afff !important; border-right-color: var(--accent); }
-    html.dark-mode blockquote,
-    body.dark-mode blockquote { background: var(--quote-bg); border-left-color: #9185ff; color: var(--text); }
-    html.dark-mode table,
-    body.dark-mode table { border-color: var(--border); }
-    html.dark-mode tr,
-    body.dark-mode tr { border-bottom-color: var(--border); }
-    html.dark-mode code,
-    body.dark-mode code { background: #2a2944; color: #d6d1ff; }
-    html.dark-mode pre,
-    body.dark-mode pre { background: var(--code-bg) !important; border: 1px solid var(--border); }
-    html.dark-mode .search .search input,
-    body.dark-mode .search .search input { background: var(--surface); color: var(--text); border-color: var(--border); }
-    html.dark-mode .pagination-item a,
-    body.dark-mode .pagination-item a { color: #a99cff !important; }
+    .markdown-section a,
+    .sidebar-nav > ul > li > a,
+    .sidebar-nav > ul > li > ul > li > a {
+      color: var(--theme-color);
+    }
+
+    html.dark-mode .markdown-section a,
+    body.dark-mode .markdown-section a,
+    html.dark-mode .sidebar-nav a,
+    body.dark-mode .sidebar-nav a {
+      color: var(--theme-color-dark) !important;
+    }
+
+    .markdown-section blockquote {
+      background: color-mix(in srgb, var(--theme-color) 7%, transparent);
+      border-left-color: var(--theme-color) !important;
+    }
+
+    .markdown-section code {
+      background: color-mix(in srgb, var(--theme-color) 9%, var(--page-bg));
+      color: var(--theme-color);
+    }
+
+    .markdown-section pre {
+      position: relative;
+      overflow: auto;
+      border: 1px solid var(--code-border) !important;
+      border-radius: 12px;
+      background: var(--code-bg) !important;
+      box-shadow: 0 8px 24px rgba(102, 88, 211, 0.08);
+    }
+
+    .markdown-section pre > code {
+      background: transparent !important;
+      color: var(--code-text) !important;
+    }
+
+    .markdown-section pre[data-lang]::before {
+      content: attr(data-lang);
+      position: absolute;
+      top: 9px;
+      right: 12px;
+      padding: 2px 8px;
+      border: 1px solid var(--code-border);
+      border-radius: 999px;
+      color: var(--muted-color);
+      font: 11px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      opacity: 0.8;
+    }
 
     .sidebar {
-      width: 340px;
-      border-right: 1px solid var(--border);
-      background: var(--sidebar-bg);
+      background: var(--sidebar-bg) !important;
+      border-right: 1px solid var(--border-color);
     }
-
-    .content { left: 340px; }
 
     .sidebar-nav {
-      padding: 20px 16px 80px;
+      padding-bottom: 80px;
     }
 
-    /* The sidebar contains every problem title; long Chinese titles must remain visible. */
+    .sidebar-nav > ul > li > strong {
+      display: block;
+      margin-top: 18px;
+      color: var(--muted-color);
+      font-size: 12px;
+      letter-spacing: 0.04em;
+    }
+
+    /* 题目标题较长，允许侧栏自然换行。 */
     .sidebar-nav li,
     .sidebar-nav a {
       white-space: normal;
-      overflow: visible;
       overflow-wrap: anywhere;
       word-break: break-word;
       line-height: 1.5;
     }
 
-    .sidebar-nav > ul > li > a {
-      font-weight: 700;
-      color: var(--text);
+    .search .search input,
+    .search .search .search-key {
+      color: var(--text-color);
+      background: var(--surface-bg);
+      border-color: var(--border-color);
     }
 
-    .sidebar-nav ul ul { padding-left: 14px; }
-    .sidebar-nav li > p { margin: 0.55em 0 0.25em; color: var(--accent); font-weight: 700; }
-    .markdown-section { max-width: 1100px; }
-    .markdown-section code { border-radius: 5px; }
-    .markdown-section pre { border-radius: 10px; box-shadow: 0 7px 24px rgba(106, 90, 205, 0.07); }
+    .search .search .search-key {
+      background: var(--sidebar-bg);
+    }
 
-    .theme-toggle {
+    .pagination-item a {
+      color: var(--theme-color) !important;
+    }
+
+    .darklight-btn {
       position: fixed;
       right: 24px;
       bottom: 24px;
       z-index: 9999;
-      width: 46px;
-      height: 46px;
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 44px;
       padding: 0;
-      border: 1px solid rgba(106, 90, 205, 0.28);
+      border: 1px solid rgba(102, 88, 211, 0.24);
       border-radius: 50%;
+      color: var(--theme-color);
       background: rgba(255, 255, 255, 0.9);
-      color: #5144b4;
-      box-shadow: 0 8px 28px rgba(44, 37, 102, 0.2);
+      box-shadow: 0 8px 24px rgba(35, 39, 70, 0.18);
       cursor: pointer;
-      font-size: 21px;
+      font-size: 20px;
       line-height: 1;
       backdrop-filter: blur(12px);
-      transition: transform 0.2s ease, background 0.2s ease;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
     }
 
-    .theme-toggle:hover { transform: translateY(-3px) scale(1.04); }
-    html.dark-mode .theme-toggle,
-    body.dark-mode .theme-toggle {
-      background: rgba(35, 38, 58, 0.94);
-      color: #e6e1ff;
-      border-color: rgba(169, 156, 255, 0.45);
+    .darklight-btn:hover,
+    .darklight-btn:focus-visible {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 28px rgba(35, 39, 70, 0.28);
+      outline: none;
     }
 
-    @media (max-width: 768px) {
-      .sidebar { width: 300px; }
-      .content { left: 0; }
-      .theme-toggle { right: 16px; bottom: 16px; }
+    html.dark-mode .darklight-btn,
+    body.dark-mode .darklight-btn {
+      color: #ffd66e;
+      background: rgba(35, 38, 58, 0.92);
+      border-color: rgba(157, 146, 255, 0.36);
+    }
+
+    @media (max-width: 600px) {
+      .darklight-btn {
+        right: 16px;
+        bottom: 16px;
+      }
     }
   </style>
 </head>
 <body>
-  <div id="app">正在加载题解目录……</div>
-  <button id="theme-toggle" class="theme-toggle" type="button" aria-label="切换暗黑模式" title="切换暗黑模式">🌙</button>
+  <div id="app">正在加载题解……</div>
+  <button id="theme-toggle" class="darklight-btn" type="button" aria-label="切换暗黑模式" title="切换暗黑模式">
+    <span aria-hidden="true">☾</span>
+  </button>
 
   <script>
     window.$docsify = {
       name: 'GPLT · 仓颉语言题解',
       repo: 'https://github.com/Zonkidd-Shao/gplt_by_cjc',
-      homepage: 'README.md',
       loadSidebar: true,
       alias: { '/.*/_sidebar.md': '/_sidebar.md' },
-      subMaxLevel: 0,
-      auto2top: true,
+      homepage: 'README.md',
+      basePath: './',
       relativePath: true,
+      subMaxLevel: 4,
+      auto2top: true,
       search: {
-        placeholder: '🔍 搜索题号 / 标题 / 关键词',
+        placeholder: '🔍 搜索题号 / 关键词',
         depth: 4,
         noData: '没有找到结果',
         paths: 'auto'
@@ -205,50 +247,69 @@
         crossChapter: true,
         crossChapterText: true
       },
-      copyCode: { buttonText: '复制', successText: '已复制' },
-      count: { countable: true, language: 'chinese' }
+      copyCode: {
+        buttonText: '复制代码',
+        errorText: '复制失败',
+        successText: '已复制'
+      },
+      count: {
+        countable: true,
+        language: 'chinese'
+      }
     };
-
-    (function () {
-      var button = document.getElementById('theme-toggle');
-
-      function isDark() {
-        return document.documentElement.classList.contains('dark-mode');
-      }
-
-      function applyTheme(dark, persist) {
-        document.documentElement.classList.toggle('dark-mode', dark);
-        document.body.classList.toggle('dark-mode', dark);
-        button.textContent = dark ? '☀️' : '🌙';
-        button.title = dark ? '切换亮色模式' : '切换暗黑模式';
-        button.setAttribute('aria-label', button.title);
-        if (persist) localStorage.setItem('gplt-theme', dark ? 'dark' : 'light');
-      }
-
-      applyTheme(isDark(), false);
-      button.addEventListener('click', function () { applyTheme(!isDark(), true); });
-      document.addEventListener('keydown', function (event) {
-        if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'd') {
-          event.preventDefault();
-          applyTheme(!isDark(), true);
-        }
-      });
-      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (event) {
-        if (!localStorage.getItem('gplt-theme')) applyTheme(event.matches, false);
-      });
-    }());
   </script>
   <script src="https://cdn.jsdelivr.net/npm/docsify@4"></script>
   <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/plugins/zoom-image.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/docsify-copy-code@3/dist/docsify-copy-code.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/docsify-pagination@2/dist/docsify-pagination.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify-copy-code@3/dist/docsify-copy-code.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/countable@3/dist/countable.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/docsify-count@1/dist/countable.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify-mermaid@2/dist/docsify-mermaid.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-core.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-c.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-cpp.min.js"></script>
   <script>
+    // 仓颉代码先沿用 C 语法高亮，保证代码块具备清晰的关键字和字符串层次。
     if (window.Prism && Prism.languages.c) Prism.languages.cangjie = Prism.languages.c;
+  </script>
+
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var button = document.getElementById('theme-toggle');
+      var icon = button.querySelector('span');
+      var media = window.matchMedia('(prefers-color-scheme: dark)');
+
+      function setTheme(theme, persist) {
+        var dark = theme === 'dark';
+        root.classList.toggle('dark-mode', dark);
+        root.dataset.theme = dark ? 'dark' : 'light';
+        document.body.classList.toggle('dark-mode', dark);
+        button.setAttribute('aria-pressed', String(dark));
+        button.setAttribute('aria-label', dark ? '切换浅色模式' : '切换暗黑模式');
+        button.title = dark ? '切换浅色模式' : '切换暗黑模式';
+        icon.textContent = dark ? '☀' : '☾';
+        if (persist) localStorage.setItem('gplt-theme', dark ? 'dark' : 'light');
+      }
+
+      var saved = null;
+      try { saved = localStorage.getItem('gplt-theme'); } catch (error) {}
+      setTheme(saved || (media.matches ? 'dark' : 'light'), false);
+
+      button.addEventListener('click', function () {
+        setTheme(root.classList.contains('dark-mode') ? 'light' : 'dark', true);
+      });
+
+      media.addEventListener('change', function (event) {
+        try {
+          if (!localStorage.getItem('gplt-theme')) setTheme(event.matches ? 'dark' : 'light', false);
+        } catch (error) {
+          setTheme(event.matches ? 'dark' : 'light', false);
+        }
+      });
+    }());
   </script>
 </body>
 </html>
